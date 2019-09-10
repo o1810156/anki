@@ -33,7 +33,7 @@ document.getElementById("question_file").addEventListener("change", (e) => {
     reader.onload = (e) => {
         let strs = reader.result;
         strs.split("\n").forEach((row)=>{
-            question_contents.push(row.split(","));
+            question_contents.push(row.replace(/\r?\n/g, '').split(","));
         });
         let i = 0;
         question.innerHTML = question_contents[0][i++];
