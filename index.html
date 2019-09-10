@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>暗記補助アプリ</title>
+  </head>
+  <body>
+    <h1>四択クイズ</h1>
+    <div id="question"></div>
+    <input type="radio" name="selections" value="1" /><span class="selections"></span><br />
+    <input type="radio" name="selections" value="2" /><span class="selections"></span><br />
+    <input type="radio" name="selections" value="3" /><span class="selections"></span><br />
+    <input type="radio" name="selections" value="4" /><span class="selections"></span><br />
+    <button id="decide">決定</button>
+    <div id="judge"></div>
+    <hr />
+    <input type="file" id="question_file" />
+    <script>
+const
+judge     = document.getElementById("judge"),
+question  = document.getElementById("question"),
+slcts     = document.getElementsByName("selections"),
+slct_strs = document.getElementsByClassName("selections");
+var
+question_contents = [],
+q_num = 0;
+
+document.getElementById("question_file").addEventListener("change", (e) => {
+    judge.innerHTML = "";
+    question.innerHTML = "";
+    const reader = new FileReader();
+    reader.readAsText(e.target.files[0]);
+    reader.onload = (e) => {
+        let strs = reader.result;
+        strs.split("\n").forEach((row)=>{
+            question_contents.push(row.split(","));
+        });
+        let i = 0;
+        question.innerHTML = question_contents[0][i++];
+        Array.prototype.forEach.call(slct_strs, (elm)=>{
+            elm.innerHTML = question_contents[0][i++];
+        });
+        q_num = 0;
+    };
+}, false);
+
+const slct_value = () => {
+    let res;
+    slcts.forEach((elm)=>{
+        if (elm.checked) res = elm.value;
+    });
+    return res;
+}
+
+document.getElementById("decide").addEventListener("click", (e) => {
+    if (question_contents.length < 1) return;
+
+    // console.log("ans: "+question_contents[q_num][5]+" val: "+slct_value());
+
+    judge.innerHTML = slct_value() == question_contents[q_num++][5] ? "<span style='color:red;'>正解</span>" : "<span style='color:blue;'>不正解</span>";
+
+    if (question_contents.length == q_num) {
+        q_num = 0;
+        question_contents = [];
+        return;
+    }
+
+    let i = 0;
+    question.innerHTML = question_contents[q_num][i++];
+    Array.prototype.forEach.call(slct_strs, (elm)=>{
+        elm.innerHTML = question_contents[q_num][i++];
+    });
+}, false);
+    </script>
+  </body>
+</html>
