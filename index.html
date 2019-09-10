@@ -32,6 +32,7 @@ document.getElementById("question_file").addEventListener("change", (e) => {
     reader.readAsText(e.target.files[0]);
     reader.onload = (e) => {
         let strs = reader.result;
+        question_contents = [];
         strs.split("\n").forEach((row)=>{
             question_contents.push(row.replace(/\r?\n/g, '').split(","));
         });
